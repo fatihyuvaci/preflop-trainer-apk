@@ -7,7 +7,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<title>NLH Preflop GTO Trainer — 15bb, 25bb, 40bb & 60bb Complete Suite (87 Charts)</title>
+<title>Fatih Preflop Trainer</title>
 <style>
   :root {
     --bg-dark: #0b1120;
@@ -83,18 +83,21 @@
     color: #fff;
   }
 
-  .brand-tag {
-    background: rgba(56, 189, 248, 0.15);
-    color: var(--accent-blue);
-    border: 1px solid rgba(56, 189, 248, 0.35);
-    padding: 2px 8px;
-    border-radius: 6px;
-    font-size: 0.7rem;
-    font-weight: 700;
-    white-space: nowrap;
+  .controls-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
   }
 
-  .controls-bar {
+  .stats-reset-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+  }
+
+  .mode-row {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -110,6 +113,48 @@
     font-size: 0.74rem;
     font-weight: 600;
     cursor: pointer;
+    max-width: 100%;
+  }
+
+  .two-step-btn {
+    background: var(--bg-dark);
+    color: #cbd5e1;
+    border: 1px solid #475569;
+    padding: 5px 10px;
+    border-radius: 7px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+  }
+
+  .two-step-btn:hover {
+    border-color: #94a3b8;
+    color: #fff;
+  }
+
+  .two-step-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #64748b;
+    transition: all 0.15s ease;
+  }
+
+  .two-step-btn.active {
+    background: rgba(251, 191, 36, 0.16);
+    border-color: var(--accent-gold);
+    color: var(--accent-gold);
+    box-shadow: 0 0 0 1px rgba(251, 191, 36, 0.25);
+  }
+
+  .two-step-btn.active .two-step-dot {
+    background: var(--accent-gold);
+    box-shadow: 0 0 7px rgba(251, 191, 36, 0.85);
   }
 
   .stats-pill {
@@ -123,6 +168,7 @@
     gap: 10px;
     cursor: pointer;
     transition: all 0.15s;
+    white-space: nowrap;
   }
 
   .stats-pill:hover {
@@ -139,6 +185,31 @@
     font-size: 0.72rem;
     cursor: pointer;
     transition: all 0.15s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 980px) {
+    .top-bar {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .controls-bar {
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+      gap: 8px;
+    }
+
+    .stats-reset-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: nowrap;
+      max-width: 100%;
+    }
   }
 
   .reset-btn:hover {
@@ -369,18 +440,19 @@
   }
 
   .poker-felt {
+    position: relative;
     background: radial-gradient(circle, var(--felt-inner) 0%, var(--felt-green) 75%, #064e3b 100%);
     border: 6px solid #3f2e21;
     box-shadow: inset 0 0 28px rgba(0,0,0,0.6), 0 5px 14px rgba(0,0,0,0.38);
-    border-radius: 110px;
+    border-radius: 56px;
     flex: 1;
-    min-height: 195px;
+    min-height: 295px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 12px;
-    padding: 14px;
+    padding: 16px 20px 88px 20px;
   }
 
   .action-history-banner {
@@ -392,6 +464,49 @@
     color: #f8fafc;
     border: 1px solid rgba(251, 191, 36, 0.35);
     text-align: center;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 7px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .action-history-banner.step2-active {
+    border-color: var(--accent-blue);
+    box-shadow: 0 0 14px rgba(56, 189, 248, 0.35);
+  }
+
+  @keyframes stepBannerPulse {
+    0% { transform: scale(0.97); box-shadow: 0 0 0 rgba(56, 189, 248, 0); }
+    50% { transform: scale(1.02); box-shadow: 0 0 18px rgba(56, 189, 248, 0.6); }
+    100% { transform: scale(1); box-shadow: 0 0 14px rgba(56, 189, 248, 0.35); }
+  }
+
+  .action-history-banner.step-pulse {
+    animation: stepBannerPulse 0.32s ease;
+  }
+
+  .step-pill {
+    font-size: 0.64rem;
+    font-weight: 900;
+    letter-spacing: 0.5px;
+    padding: 2px 7px;
+    border-radius: 999px;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  .step-pill.step-1 {
+    background: rgba(251, 191, 36, 0.2);
+    color: var(--accent-gold);
+    border: 1px solid rgba(251, 191, 36, 0.5);
+  }
+
+  .step-pill.step-2 {
+    background: rgba(56, 189, 248, 0.22);
+    color: var(--accent-blue);
+    border: 1px solid rgba(56, 189, 248, 0.6);
   }
 
   .hero-area {
@@ -453,33 +568,55 @@
     border: 2px solid var(--accent-gold);
   }
 
-  /* FEEDBACK BOX */
+  /* FEEDBACK BOX (Anchored at bottom inside poker table - zero layout shift) */
   .feedback-box {
+    position: absolute;
+    left: 16px;
+    right: 16px;
+    bottom: 12px;
+    max-width: 520px;
+    margin: 0 auto;
     min-height: 58px;
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 8px 12px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    background: var(--bg-dark);
-    border: 1px solid var(--panel-border);
+    background: rgba(11, 17, 32, 0.92);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1.5px solid var(--panel-border);
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
     gap: 8px;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.14s ease;
+    z-index: 15;
   }
 
   .feedback-box.correct {
-    background: rgba(21, 128, 61, 0.28);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    background: rgba(9, 44, 26, 0.94);
     border-color: #22c55e;
   }
 
   .feedback-box.wrong {
-    background: rgba(185, 28, 28, 0.28);
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    background: rgba(60, 14, 18, 0.94);
     border-color: #ef4444;
   }
 
   .feedback-left {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 9px;
+    min-width: 0;
+    flex: 1;
   }
 
   .feedback-icon {
@@ -498,15 +635,21 @@
   .icon-correct { background: #22c55e; color: #052e16; }
   .icon-wrong { background: #ef4444; color: #fff; }
 
+  .feedback-text {
+    min-width: 0;
+  }
+
   .feedback-text h3 {
-    font-size: 0.85rem;
+    font-size: 0.84rem;
     font-weight: 800;
+    line-height: 1.2;
   }
 
   .feedback-text p {
-    font-size: 0.73rem;
-    color: #cbd5e1;
+    font-size: 0.72rem;
+    color: #e2e8f0;
     margin-top: 2px;
+    line-height: 1.25;
   }
 
   .next-btn {
@@ -520,7 +663,38 @@
     cursor: pointer;
     display: none;
     white-space: nowrap;
+    flex-shrink: 0;
     box-shadow: 0 3px 8px rgba(0,0,0,0.3);
+  }
+
+  @media (max-width: 600px) {
+    .poker-felt {
+      border-radius: 36px;
+      min-height: 280px;
+      padding: 14px 12px 86px 12px;
+    }
+    .feedback-box {
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      padding: 7px 10px;
+      min-height: 54px;
+    }
+    .feedback-icon {
+      width: 30px;
+      height: 30px;
+      font-size: 1.05rem;
+    }
+    .feedback-text h3 {
+      font-size: 0.78rem;
+    }
+    .feedback-text p {
+      font-size: 0.69rem;
+    }
+    .next-btn {
+      padding: 8px 11px;
+      font-size: 0.74rem;
+    }
   }
 
   /* ACTION BUTTONS */
@@ -533,7 +707,7 @@
   .act-btn {
     border: none;
     border-radius: 10px;
-    padding: 11px 6px;
+    padding: 13px 6px;
     color: #fff;
     cursor: pointer;
     display: flex;
@@ -584,9 +758,62 @@
     gap: 6px;
   }
 
+  .chart-title-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
   .chart-title {
     font-size: 0.86rem;
     font-weight: 800;
+  }
+
+  .chart-step-tabs {
+    display: none;
+    align-items: center;
+    background: var(--bg-dark);
+    border: 1px solid var(--panel-border);
+    border-radius: 7px;
+    padding: 2px;
+    gap: 2px;
+  }
+
+  .chart-step-tabs.visible {
+    display: inline-flex;
+  }
+
+  .chart-step-tab {
+    background: transparent;
+    border: none;
+    color: var(--text-muted);
+    padding: 3px 8px;
+    border-radius: 5px;
+    font-size: 0.69rem;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.14s ease;
+    white-space: nowrap;
+  }
+
+  .chart-step-tab:hover {
+    color: #fff;
+  }
+
+  .chart-step-tab.active {
+    background: #334155;
+    color: #fff;
+  }
+
+  .chart-step-tab.tab-ok.active {
+    background: rgba(34, 197, 94, 0.22);
+    color: #4ade80;
+  }
+
+  .chart-step-tab.tab-err.active {
+    background: rgba(239, 68, 68, 0.25);
+    color: #f87171;
   }
 
   .legend {
@@ -719,7 +946,7 @@
   .chart-footer {
     margin-top: 6px;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
     align-items: center;
     font-size: 0.7rem;
     color: var(--text-muted);
@@ -951,21 +1178,28 @@
   <!-- TOP HEADER BAR -->
   <header class="top-bar">
     <div class="brand">
-      <h1>♠️ NLH PREFLOP GTO TRAINER</h1>
-      <span class="brand-tag" id="totalChartsTag">87 Charts (15, 25, 40 & 60bb)</span>
+      <h1>Fatih Preflop Trainer</h1>
     </div>
     <div class="controls-bar">
-      <select id="drillMode" class="mode-select">
-        <option value="smart">Smart Mix (65% Borderline)</option>
-        <option value="borderline">Borderline / Active Only</option>
-        <option value="random">True Random (All Hands)</option>
-      </select>
-      <div class="stats-pill" onclick="openMistakesModal()" title="Click to view mistakes">
-        <span><strong id="scoreText">0/0</strong></span>
-        <span><strong id="accText">0%</strong></span>
-        <span><strong id="streakText">0</strong>🔥</span>
+      <div class="mode-row">
+        <select id="drillMode" class="mode-select">
+          <option value="smart">Smart Mix (65% Borderline)</option>
+          <option value="borderline">Borderline / Active Only</option>
+          <option value="random">True Random (All Hands)</option>
+        </select>
+        <button type="button" id="twoStepToggle" class="two-step-btn" onclick="toggleTwoStepMode()" title="Toggle 2-Step preflop chains">
+          <span class="two-step-dot"></span>
+          <span>2-Step</span>
+        </button>
       </div>
-      <button class="reset-btn" onclick="resetStats()">Reset</button>
+      <div class="stats-reset-row">
+        <div class="stats-pill" onclick="openMistakesModal()" title="Click to view mistakes">
+          <span><strong id="scoreText">0/0</strong></span>
+          <span><strong id="accText">0%</strong></span>
+          <span><strong id="streakText">0</strong>🔥</span>
+        </div>
+        <button class="reset-btn" onclick="resetStats()">Reset</button>
+      </div>
     </div>
   </header>
 
@@ -1041,17 +1275,17 @@
           </div>
           <div id="handNotation" class="hand-notation-badge">AKo</div>
         </div>
-      </div>
 
-      <div id="feedbackBox" class="feedback-box">
-        <div class="feedback-left">
-          <div id="feedbackIcon" class="feedback-icon icon-neutral">?</div>
-          <div class="feedback-text">
-            <h3 id="feedbackTitle">Your Action</h3>
-            <p id="feedbackDesc">Select your action below or use keyboard shortcuts.</p>
+        <div id="feedbackBox" class="feedback-box">
+          <div class="feedback-left">
+            <div id="feedbackIcon" class="feedback-icon icon-neutral">?</div>
+            <div class="feedback-text">
+              <h3 id="feedbackTitle"></h3>
+              <p id="feedbackDesc"></p>
+            </div>
           </div>
+          <button id="nextBtn" class="next-btn" onclick="dealNextHand()">NEXT →</button>
         </div>
-        <button id="nextBtn" class="next-btn" onclick="dealNextHand()">NEXT [Space] →</button>
       </div>
 
       <div id="actionButtonsContainer" class="action-buttons"></div>
@@ -1060,7 +1294,13 @@
     <!-- RIGHT: 13x13 MATRIX -->
     <section class="chart-panel">
       <div class="chart-header">
-        <div class="chart-title" id="chartTitle">Hand Range 136: UTG 15bb</div>
+        <div class="chart-title-group">
+          <div class="chart-title" id="chartTitle">Hand Range 136: UTG 15bb</div>
+          <div id="chartStepTabs" class="chart-step-tabs">
+            <button type="button" id="tabStep1" class="chart-step-tab" onclick="viewChartStep(1)">Step 1</button>
+            <button type="button" id="tabStep2" class="chart-step-tab" onclick="viewChartStep(2)">Step 2</button>
+          </div>
+        </div>
         <div class="legend" id="chartLegend"></div>
       </div>
 
@@ -1068,12 +1308,11 @@
         <div id="matrixGrid" class="matrix-grid"></div>
         <div id="matrixMask" class="matrix-mask">
           <div class="mask-title">🔒 Range Chart Hidden</div>
-          <div class="mask-sub">Touch & hold here (or hold [`] key) to peek, or choose your action to reveal the full GTO matrix.</div>
+          <div class="mask-sub">Touch & hold here to peek, or choose your action to reveal the full GTO matrix.</div>
         </div>
       </div>
 
       <div class="chart-footer">
-        <span>Shortcuts: [1-4] or [F]old, [C]all, [R]aise, [A]ll-in • Hold [`] Peek • [Space] Next</span>
         <button class="toggle-peek-btn" onclick="togglePeek()">👁️ Peek Chart</button>
       </div>
     </section>
@@ -5311,6 +5550,63 @@
     }
   };
 
+  // ============================================================================
+  // 2-STEP CHAIN DEFINITIONS (37 CHAINS ACROSS 15, 25, 40 & 60BB)
+  // ============================================================================
+  const STEP_CHAINS = {
+    // 15bb (5 chains)
+    utg_15_open:       { label: 'UTG Open → vs All-in',          next: { raise: ['utg_15_vs_3bet'] } },
+    hj_15_open:        { label: 'LJ/HJ Open → vs All-in',        next: { raise: ['hj_15_vs_3bet'] } },
+    bn_15_open:        { label: 'BN Open → vs All-in',           next: { raise: ['bn_15_vs_3bet'] } },
+    sb_15_pfi:         { label: 'SB PFI → Limp vs Iso / All-in', next: { call: ['sb_15_limp_vs_allin', 'sb_15_limp_vs_iso'] } },
+    bb_15_vs_sb_limp:  { label: 'BB vs SB Limp → vs Limp/Push',  next: { raise: ['bb_15_vs_sb_limp_push'] } },
+
+    // 25bb (10 chains)
+    utg_25_open:       { label: 'UTG Open → vs 3-Bet',           next: { raise: ['utg_25_vs_3bet'] } },
+    utg1_25_vs_open:   { label: 'UTG+1 vs Open → vs 4-Bet',      next: { raise: ['utg1_25_vs_4bet'] } },
+    hj_25_open:        { label: 'LJ/HJ Open → vs 3-Bet All-in',  next: { raise: ['hj_25_vs_3bet'] } },
+    hj_25_vs_open:     { label: 'LJ/HJ vs Open → vs 4-Bet',      next: { raise: ['hj_25_vs_4bet'] } },
+    bn_25_open:        { label: 'BN Open → vs BB 3-Bet',         next: { raise: ['bn_25_vs_3bet'] } },
+    bn_25_vs_open:     { label: 'BN vs Open → vs 4-Bet',         next: { raise: ['bn_25_vs_4bet'] } },
+    sb_25_pfi:         { label: 'SB PFI → Limp/Open vs BB',      next: { call: ['sb_25_limp_vs_allin', 'sb_25_limp_vs_iso'], raise: ['sb_25_open_vs_allin'] } },
+    sb_25_vs_open:     { label: 'SB vs UTG Open → vs 4-Bet',     next: { raise: ['sb_25_vs_4bet'] } },
+    bb_25_vs_sb_limp:  { label: 'BB vs SB Limp → vs Limp-Push',  next: { raise: ['bb_25_vs_sb_limp_push'] } },
+    bb_25_vs_utg_open: { label: 'BB vs UTG Open → vs 4-Bet',     next: { raise: ['bb_25_vs_utg_4bet'] } },
+
+    // 40bb (11 chains)
+    utg_40_open:       { label: 'UTG Open → vs 3-Bet',           next: { raise: ['utg_40_vs_3bet'] } },
+    utg1_40_vs_open:   { label: 'UTG+1 vs Open → vs 4-Bet',      next: { raise: ['utg1_40_vs_4bet'] } },
+    hj_40_open:        { label: 'LJ/HJ Open → vs 3-Bet',         next: { raise: ['hj_40_vs_3bet'] } },
+    hj_40_vs_open:     { label: 'LJ/HJ vs Open → vs 4-Bet',      next: { raise: ['hj_40_vs_4bet'] } },
+    bn_40_open:        { label: 'BN Open → vs BB 3-Bet',         next: { raise: ['bn_40_vs_3bet'] } },
+    bn_40_vs_open:     { label: 'BN vs Open → vs 4-Bet',         next: { raise: ['bn_40_vs_4bet'] } },
+    sb_40_pfi:         { label: 'SB PFI → Limp/Open vs BB',      next: { call: ['sb_40_limp_vs_iso'], raise: ['sb_40_open_vs_3bet'] } },
+    sb_40_vs_open:     { label: 'SB vs UTG Open → vs 4-Bet',     next: { raise: ['sb_40_vs_4bet'] } },
+    bb_40_vs_sb_open:  { label: 'BB vs SB Open → vs 4-Bet',      next: { raise: ['bb_40_vs_sb_4bet'] } },
+    bb_40_vs_sb_limp:  { label: 'BB vs SB Limp → vs Limp-Raise', next: { raise: ['bb_40_vs_sb_limp_raise'] } },
+    bb_40_vs_utg_open: { label: 'BB vs UTG Open → vs 4-Bet',     next: { raise: ['bb_40_vs_utg_4bet'] } },
+
+    // 60bb (11 chains)
+    utg_60_open:       { label: 'UTG Open → vs 3-Bet',           next: { raise: ['utg_60_vs_3bet'] } },
+    utg1_60_vs_open:   { label: 'UTG+1 vs Open → vs 4-Bet',      next: { raise: ['utg1_60_vs_4bet'] } },
+    hj_60_open:        { label: 'LJ/HJ Open → vs 3-Bet',         next: { raise: ['hj_60_vs_3bet'] } },
+    hj_60_vs_open:     { label: 'LJ/HJ vs Open → vs 4-Bet',      next: { raise: ['hj_60_vs_4bet'] } },
+    bn_60_open:        { label: 'BN Open → vs BB 3-Bet',         next: { raise: ['bn_60_vs_3bet'] } },
+    bn_60_vs_open:     { label: 'BN vs Open → vs 4-Bet',         next: { raise: ['bn_60_vs_4bet'] } },
+    sb_60_pfi:         { label: 'SB PFI → Limp/Open vs BB',      next: { call: ['sb_60_limp_vs_iso'], raise: ['sb_60_open_vs_3bet'] } },
+    sb_60_vs_open:     { label: 'SB vs UTG Open → vs 4-Bet',     next: { raise: ['sb_60_vs_4bet'] } },
+    bb_60_vs_sb_open:  { label: 'BB vs SB Open → vs 4-Bet',      next: { raise: ['bb_60_vs_sb_4bet'] } },
+    bb_60_vs_sb_limp:  { label: 'BB vs SB Limp → vs Limp-Raise', next: { raise: ['bb_60_vs_sb_limp_raise'] } },
+    bb_60_vs_utg_open: { label: 'BB vs UTG Open → vs 4-Bet',     next: { raise: ['bb_60_vs_utg_4bet'] } }
+  };
+
+  const STEP2_TO_STEP1 = {};
+  Object.entries(STEP_CHAINS).forEach(([step1Id, cfg]) => {
+    Object.values(cfg.next).forEach(arr => {
+      arr.forEach(step2Id => { STEP2_TO_STEP1[step2Id] = step1Id; });
+    });
+  });
+
   let currentStackKey = '15'; // '15', '25', '40', '60', or 'MIX'
   let currentPosKey   = 'UTG'; // 'UTG', 'HJ', 'BN', 'SB', 'BB', or 'MIX'
   let selectedSpotId  = 'utg_15_open';
@@ -5320,40 +5616,157 @@
   let answered = false;
   let stats = { correct: 0, total: 0, streak: 0, mistakes: [] };
 
+  // 2-Step Mode state
+  let twoStepMode = false;
+  let currentStepNum = 1;
+  let step1Record = null;
+  let completedSteps = []; // [{ scenario, actionCode, actionLabel, chosenFreq, isCorrect, breakdownStr }, ...]
+  let activeChartStepView = 1;
+
   // Hold-to-Peek state
   let isHoldingPeek = false;
   let maskWasCoveredBeforeHold = true;
 
-  function getSpotsForCurrentSelection(stackKey, posKey) {
-    if (stackKey === '15' || stackKey === '25' || stackKey === '40' || stackKey === '60') {
-      return SPOTS_BY_STACK_AND_POS[stackKey][posKey];
+  function loadTwoStepPref() {
+    try {
+      twoStepMode = localStorage.getItem('nlh_gto_two_step_mode') === '1';
+    } catch (e) {
+      twoStepMode = false;
     }
-    // stackKey === 'MIX'
-    if (posKey === 'MIX') {
+    updateTwoStepToggleUI();
+  }
+
+  function updateTwoStepToggleUI() {
+    const btn = document.getElementById('twoStepToggle');
+    if (btn) btn.classList.toggle('active', twoStepMode);
+  }
+
+  function toggleTwoStepMode() {
+    twoStepMode = !twoStepMode;
+    try {
+      localStorage.setItem('nlh_gto_two_step_mode', twoStepMode ? '1' : '0');
+    } catch (e) {}
+    updateTwoStepToggleUI();
+    ensureValidSpotForMode();
+    closeAllDropdowns();
+    renderDropdownMenus();
+    dealNextHand();
+  }
+
+  function ensureValidSpotForMode() {
+    const spots = getSpotsForCurrentSelection(currentStackKey, currentPosKey);
+    if (spots.some(s => s.id === selectedSpotId)) return;
+
+    if (twoStepMode && STEP2_TO_STEP1[selectedSpotId]) {
+      const rootId = STEP2_TO_STEP1[selectedSpotId];
+      if (spots.some(s => s.id === rootId)) {
+        selectedSpotId = rootId;
+        return;
+      }
+    }
+    if (spots.length > 0) {
+      selectedSpotId = spots[0].id;
+    }
+  }
+
+  function getChainKeys(filterFn) {
+    return Object.keys(STEP_CHAINS).filter(k => SCENARIOS[k] && (!filterFn || filterFn(SCENARIOS[k])));
+  }
+
+  function getSpotsForCurrentSelection(stackKey, posKey) {
+    if (!twoStepMode) {
+      if (stackKey === '15' || stackKey === '25' || stackKey === '40' || stackKey === '60') {
+        return SPOTS_BY_STACK_AND_POS[stackKey][posKey];
+      }
+      // stackKey === 'MIX'
+      if (posKey === 'MIX') {
+        return [
+          { id: 'mix_all_87',  label: '🔥 All 87 Spots (15, 25, 40 & 60bb)', tag: '87 Charts' },
+          { id: 'mix_15_all',  label: '🎲 All 15bb Spots',                   tag: '17 Charts' },
+          { id: 'mix_25_all',  label: '🎲 All 25bb Spots',                   tag: '24 Charts' },
+          { id: 'mix_40_all',  label: '🎲 All 40bb Spots',                   tag: '23 Charts' },
+          { id: 'mix_60_all',  label: '🎲 All 60bb Spots',                   tag: '23 Charts' },
+          { id: 'mix_all_UTG', label: '🎲 Mix UTG (All Stacks)',             tag: '15 Charts' },
+          { id: 'mix_all_HJ',  label: '🎲 Mix LJ/HJ (All Stacks)',           tag: '15 Charts' },
+          { id: 'mix_all_BN',  label: '🎲 Mix CO/BN (All Stacks)',           tag: '15 Charts' },
+          { id: 'mix_all_SB',  label: '🎲 Mix SB (All Stacks)',              tag: '20 Charts' },
+          { id: 'mix_all_BB',  label: '🎲 Mix BB (All Stacks)',              tag: '22 Charts' }
+        ];
+      }
+      const list15 = SPOTS_BY_STACK_AND_POS['15'][posKey].filter(s => !s.id.startsWith('mix_'));
+      const list25 = SPOTS_BY_STACK_AND_POS['25'][posKey].filter(s => !s.id.startsWith('mix_'));
+      const list40 = SPOTS_BY_STACK_AND_POS['40'][posKey].filter(s => !s.id.startsWith('mix_'));
+      const list60 = SPOTS_BY_STACK_AND_POS['60'][posKey].filter(s => !s.id.startsWith('mix_'));
       return [
-        { id: 'mix_all_87',  label: '🔥 All 87 Spots (15, 25, 40 & 60bb)', tag: '87 Charts' },
-        { id: 'mix_15_all',  label: '🎲 All 15bb Spots',                   tag: '17 Charts' },
-        { id: 'mix_25_all',  label: '🎲 All 25bb Spots',                   tag: '24 Charts' },
-        { id: 'mix_40_all',  label: '🎲 All 40bb Spots',                   tag: '23 Charts' },
-        { id: 'mix_60_all',  label: '🎲 All 60bb Spots',                   tag: '23 Charts' },
-        { id: 'mix_all_UTG', label: '🎲 Mix UTG (All Stacks)',             tag: '15 Charts' },
-        { id: 'mix_all_HJ',  label: '🎲 Mix LJ/HJ (All Stacks)',           tag: '15 Charts' },
-        { id: 'mix_all_BN',  label: '🎲 Mix CO/BN (All Stacks)',           tag: '15 Charts' },
-        { id: 'mix_all_SB',  label: '🎲 Mix SB (All Stacks)',              tag: '20 Charts' },
-        { id: 'mix_all_BB',  label: '🎲 Mix BB (All Stacks)',              tag: '22 Charts' }
+        { id: `mix_all_${posKey}`, label: `🎲 Mix ${posKey} (15, 25, 40 & 60bb)`, tag: 'Mix All' },
+        ...list15,
+        ...list25,
+        ...list40,
+        ...list60
       ];
     }
-    // Specific position with MIX stack depth
-    const list15 = SPOTS_BY_STACK_AND_POS['15'][posKey].filter(s => !s.id.startsWith('mix_'));
-    const list25 = SPOTS_BY_STACK_AND_POS['25'][posKey].filter(s => !s.id.startsWith('mix_'));
-    const list40 = SPOTS_BY_STACK_AND_POS['40'][posKey].filter(s => !s.id.startsWith('mix_'));
-    const list60 = SPOTS_BY_STACK_AND_POS['60'][posKey].filter(s => !s.id.startsWith('mix_'));
+
+    // 2-STEP MODE SPOT OPTIONS
+    const toChainItem = (id, idx) => ({
+      id,
+      label: `${idx + 1}. ${STEP_CHAINS[id].label}`,
+      tag: `${SCENARIOS[id].stack}bb`
+    });
+
+    if (stackKey === '15' || stackKey === '25' || stackKey === '40' || stackKey === '60') {
+      if (posKey === 'MIX') {
+        const total = getChainKeys(s => s.stack === stackKey).length;
+        const items = [{ id: `mix_${stackKey}_all`, label: `🔥 All ${total} Chains (${stackKey}bb)`, tag: `${total} Chains` }];
+        ['UTG', 'HJ', 'BN', 'SB', 'BB'].forEach(grp => {
+          const cnt = getChainKeys(s => s.stack === stackKey && s.group === grp).length;
+          if (cnt > 0) {
+            const grpName = grp === 'HJ' ? 'LJ/HJ' : grp === 'BN' ? 'CO/BN' : grp;
+            items.push({ id: `mix_${stackKey}_${grp.toLowerCase()}`, label: `🎲 Mix ${grpName} (${stackKey}bb)`, tag: `${cnt} ${cnt === 1 ? 'Chain' : 'Chains'}` });
+          }
+        });
+        return items;
+      }
+
+      const chainIds = SPOTS_BY_STACK_AND_POS[stackKey][posKey]
+        .filter(s => !s.id.startsWith('mix_') && STEP_CHAINS[s.id])
+        .map(s => s.id);
+      const list = chainIds.map((id, i) => toChainItem(id, i));
+      if (chainIds.length > 1) {
+        const grpName = posKey === 'HJ' ? 'LJ/HJ' : posKey === 'BN' ? 'CO/BN' : posKey;
+        list.push({ id: `mix_${stackKey}_${posKey.toLowerCase()}`, label: `🎲 Mix ${grpName} (${stackKey}bb)`, tag: 'Mix' });
+      }
+      return list;
+    }
+
+    // stackKey === 'MIX' in 2-Step mode
+    if (posKey === 'MIX') {
+      const totalAll = getChainKeys().length;
+      const items = [
+        { id: 'mix_all_87', label: `🔥 All ${totalAll} Chains (15, 25, 40 & 60bb)`, tag: `${totalAll} Chains` }
+      ];
+      ['15', '25', '40', '60'].forEach(st => {
+        const cnt = getChainKeys(s => s.stack === st).length;
+        items.push({ id: `mix_${st}_all`, label: `🎲 All ${st}bb Chains`, tag: `${cnt} Chains` });
+      });
+      ['UTG', 'HJ', 'BN', 'SB', 'BB'].forEach(grp => {
+        const cnt = getChainKeys(s => s.group === grp).length;
+        const grpName = grp === 'HJ' ? 'LJ/HJ' : grp === 'BN' ? 'CO/BN' : grp;
+        items.push({ id: `mix_all_${grp}`, label: `🎲 Mix ${grpName} (All Stacks)`, tag: `${cnt} Chains` });
+      });
+      return items;
+    }
+
+    // Specific position with MIX stack depth in 2-Step mode
+    const allPosChains = [];
+    ['15', '25', '40', '60'].forEach(st => {
+      SPOTS_BY_STACK_AND_POS[st][posKey]
+        .filter(s => !s.id.startsWith('mix_') && STEP_CHAINS[s.id])
+        .forEach(s => allPosChains.push(s.id));
+    });
+    const grpName = posKey === 'HJ' ? 'LJ/HJ' : posKey === 'BN' ? 'CO/BN' : posKey;
     return [
-      { id: `mix_all_${posKey}`, label: `🎲 Mix ${posKey} (15, 25, 40 & 60bb)`, tag: 'Mix All' },
-      ...list15,
-      ...list25,
-      ...list40,
-      ...list60
+      { id: `mix_all_${posKey}`, label: `🎲 Mix ${grpName} (All Stacks)`, tag: `${allPosChains.length} Chains` },
+      ...allPosChains.map((id, i) => toChainItem(id, i))
     ];
   }
 
@@ -5365,12 +5778,17 @@
       return `mix_${targetStack}_all`;
     }
     if (oldSpotId.startsWith('mix_')) {
-      return `mix_${targetStack}_${posKey.toLowerCase()}`;
+      const targetMix = `mix_${targetStack}_${posKey.toLowerCase()}`;
+      const spots = getSpotsForCurrentSelection(targetStack, posKey);
+      if (spots.some(s => s.id === targetMix)) return targetMix;
+      return spots[0].id;
     }
 
     // Replace stack token _(15|25|40|60)_ with _targetStack_
     let candidate = oldSpotId.replace(/_(15|25|40|60)_/, `_${targetStack}_`);
-    if (SCENARIOS[candidate] && SCENARIOS[candidate].group === posKey) {
+    const isAllowed = id => SCENARIOS[id] && SCENARIOS[id].group === posKey && (!twoStepMode || !!STEP_CHAINS[id]);
+
+    if (isAllowed(candidate)) {
       return candidate;
     }
 
@@ -5382,11 +5800,11 @@
       [`bb_${targetStack}_vs_sb_limp_raise`]: `bb_${targetStack}_vs_sb_limp_push`
     };
 
-    if (equivalents[candidate] && SCENARIOS[equivalents[candidate]] && SCENARIOS[equivalents[candidate]].group === posKey) {
+    if (equivalents[candidate] && isAllowed(equivalents[candidate])) {
       return equivalents[candidate];
     }
 
-    const available = SPOTS_BY_STACK_AND_POS[targetStack][posKey];
+    const available = getSpotsForCurrentSelection(targetStack, posKey);
     return available[0].id;
   }
 
@@ -5418,22 +5836,28 @@
   });
 
   function renderDropdownMenus() {
+    const unitLabel = (n) => twoStepMode ? (n === 1 ? '1 Chain' : `${n} Chains`) : `${n} Spots`;
+    const stackUnitLabel = (n) => twoStepMode ? `${n} Chains` : `${n} Charts`;
+
     // 1. Position Menu
     const menuPos = document.getElementById('menuPos');
     menuPos.innerHTML = POSITIONS.map(p => {
-      const count15 = p.key === 'MIX' ? 17 : Object.values(SCENARIOS).filter(s => s.stack === '15' && s.group === p.key).length;
-      const count25 = p.key === 'MIX' ? 24 : Object.values(SCENARIOS).filter(s => s.stack === '25' && s.group === p.key).length;
-      const count40 = p.key === 'MIX' ? 23 : Object.values(SCENARIOS).filter(s => s.stack === '40' && s.group === p.key).length;
-      const count60 = p.key === 'MIX' ? 23 : Object.values(SCENARIOS).filter(s => s.stack === '60' && s.group === p.key).length;
-      const countText = currentStackKey === '15' ? `${count15} Spots`
-                      : currentStackKey === '25' ? `${count25} Spots`
-                      : currentStackKey === '40' ? `${count40} Spots`
-                      : currentStackKey === '60' ? `${count60} Spots`
-                      : `${count15 + count25 + count40 + count60} Spots`;
+      const countFor = (st) => {
+        if (twoStepMode) {
+          return getChainKeys(s => s.stack === st && (p.key === 'MIX' || s.group === p.key)).length;
+        }
+        return Object.values(SCENARIOS).filter(s => s.stack === st && (p.key === 'MIX' || s.group === p.key)).length;
+      };
+      const c15 = countFor('15'), c25 = countFor('25'), c40 = countFor('40'), c60 = countFor('60');
+      const cnt = currentStackKey === '15' ? c15
+                : currentStackKey === '25' ? c25
+                : currentStackKey === '40' ? c40
+                : currentStackKey === '60' ? c60
+                : (c15 + c25 + c40 + c60);
       return `
         <button type="button" class="menu-option ${currentPosKey === p.key ? 'active' : ''}" onclick="selectPos('${p.key}', event)">
           <span>${p.label}</span>
-          <span class="menu-option-tag">${countText}</span>
+          <span class="menu-option-tag">${unitLabel(cnt)}</span>
         </button>
       `;
     }).join('');
@@ -5441,15 +5865,16 @@
     // 2. Stack Depth Menu
     const menuStack = document.getElementById('menuStack');
     menuStack.innerHTML = STACKS.map(st => {
-      const tag = st.key === '15' ? '17 Charts'
-                : st.key === '25' ? '24 Charts'
-                : st.key === '40' ? '23 Charts'
-                : st.key === '60' ? '23 Charts'
-                : '87 Charts';
+      let cnt;
+      if (twoStepMode) {
+        cnt = st.key === 'MIX' ? getChainKeys().length : getChainKeys(s => s.stack === st.key).length;
+      } else {
+        cnt = st.key === 'MIX' ? Object.keys(SCENARIOS).length : Object.values(SCENARIOS).filter(s => s.stack === st.key).length;
+      }
       return `
         <button type="button" class="menu-option ${currentStackKey === st.key ? 'active' : ''}" onclick="selectStack('${st.key}', event)">
           <span>${st.label}</span>
-          <span class="menu-option-tag">${tag}</span>
+          <span class="menu-option-tag">${stackUnitLabel(cnt)}</span>
         </button>
       `;
     }).join('');
@@ -5490,26 +5915,34 @@
   }
 
   function resolveScenarioFromSpot(spotId) {
-    const allKeys = Object.keys(SCENARIOS);
-    const pick = arr => SCENARIOS[arr[Math.floor(Math.random() * arr.length)]];
+    const poolKeys = twoStepMode ? Object.keys(STEP_CHAINS) : Object.keys(SCENARIOS);
+    const pick = arr => {
+      if (!arr || arr.length === 0) return SCENARIOS[poolKeys[0]];
+      return SCENARIOS[arr[Math.floor(Math.random() * arr.length)]];
+    };
 
-    if (spotId === 'mix_all_87') return pick(allKeys);
-    if (spotId === 'mix_15_all') return pick(allKeys.filter(k => SCENARIOS[k].stack === '15'));
-    if (spotId === 'mix_25_all') return pick(allKeys.filter(k => SCENARIOS[k].stack === '25'));
-    if (spotId === 'mix_40_all') return pick(allKeys.filter(k => SCENARIOS[k].stack === '40'));
-    if (spotId === 'mix_60_all') return pick(allKeys.filter(k => SCENARIOS[k].stack === '60'));
+    if (spotId === 'mix_all_87') return pick(poolKeys);
+    if (spotId === 'mix_15_all') return pick(poolKeys.filter(k => SCENARIOS[k].stack === '15'));
+    if (spotId === 'mix_25_all') return pick(poolKeys.filter(k => SCENARIOS[k].stack === '25'));
+    if (spotId === 'mix_40_all') return pick(poolKeys.filter(k => SCENARIOS[k].stack === '40'));
+    if (spotId === 'mix_60_all') return pick(poolKeys.filter(k => SCENARIOS[k].stack === '60'));
 
     const matchAllStacksPos = spotId.match(/^mix_all_(UTG|HJ|BN|SB|BB)$/);
     if (matchAllStacksPos) {
       const grp = matchAllStacksPos[1];
-      return pick(allKeys.filter(k => SCENARIOS[k].group === grp));
+      return pick(poolKeys.filter(k => SCENARIOS[k].group === grp));
     }
 
     const matchSingleStackPos = spotId.match(/^mix_(15|25|40|60)_(utg|hj|bn|sb|bb)$/);
     if (matchSingleStackPos) {
       const st = matchSingleStackPos[1];
       const grp = matchSingleStackPos[2].toUpperCase();
-      return pick(allKeys.filter(k => SCENARIOS[k].stack === st && SCENARIOS[k].group === grp));
+      return pick(poolKeys.filter(k => SCENARIOS[k].stack === st && SCENARIOS[k].group === grp));
+    }
+
+    if (twoStepMode && !STEP_CHAINS[spotId]) {
+      if (STEP2_TO_STEP1[spotId]) return SCENARIOS[STEP2_TO_STEP1[spotId]];
+      return pick(poolKeys);
     }
 
     return SCENARIOS[spotId] || SCENARIOS.utg_15_open;
@@ -5529,17 +5962,7 @@
     return { allin, raise, call, fold };
   }
 
-  function buildScenarioUI(scenario) {
-    document.getElementById('badgePos').textContent = scenario.pos;
-    document.getElementById('badgeStack').textContent = `${scenario.stack} BB`;
-    document.getElementById('badgeSpot').textContent = scenario.spot;
-
-    // Show/hide mix mini pills on the 3 boxes when Mix is active
-    document.getElementById('mixPillPos').classList.toggle('visible', currentPosKey === 'MIX');
-    document.getElementById('mixPillStack').classList.toggle('visible', currentStackKey === 'MIX');
-    document.getElementById('mixPillSpot').classList.toggle('visible', selectedSpotId.startsWith('mix_'));
-
-    document.getElementById('feltBanner').textContent = scenario.banner;
+  function renderChartPanel(scenario, highlightHand = null) {
     document.getElementById('chartTitle').textContent = scenario.title;
 
     const legEl = document.getElementById('chartLegend');
@@ -5550,69 +5973,140 @@
       </div>
     `).join('');
 
+    if (lastRenderedScenarioId !== scenario.id) {
+      lastRenderedScenarioId = scenario.id;
+      const grid = document.getElementById('matrixGrid');
+      grid.innerHTML = '';
+
+      ALL_169_HANDS.forEach(hand => {
+        const cell = document.createElement('div');
+        cell.id = `cell-${hand}`;
+        const dist = getHandBreakdown(scenario, hand);
+
+        if (!dist) {
+          cell.className = 'matrix-cell unused-cell';
+          cell.innerHTML = `<span>${hand}</span>`;
+        } else {
+          cell.className = 'matrix-cell';
+          const bars = document.createElement('div');
+          bars.className = 'cell-bars';
+
+          if (dist.allin > 0) {
+            const b = document.createElement('div');
+            b.className = 'bar-allin';
+            b.style.width = `${dist.allin}%`;
+            bars.appendChild(b);
+          }
+          if (dist.raise > 0) {
+            const b = document.createElement('div');
+            b.className = 'bar-raise';
+            b.style.width = `${dist.raise}%`;
+            bars.appendChild(b);
+          }
+          if (dist.call > 0) {
+            const b = document.createElement('div');
+            b.className = 'bar-call';
+            b.style.width = `${dist.call}%`;
+            bars.appendChild(b);
+          }
+          if (dist.fold > 0) {
+            const b = document.createElement('div');
+            b.className = 'bar-fold';
+            b.style.width = `${dist.fold}%`;
+            bars.appendChild(b);
+          }
+
+          cell.appendChild(bars);
+          const label = document.createElement('span');
+          label.textContent = hand;
+          cell.appendChild(label);
+        }
+
+        grid.appendChild(cell);
+      });
+    } else {
+      document.querySelectorAll('.matrix-cell.active-hand').forEach(el => el.classList.remove('active-hand'));
+    }
+
+    if (highlightHand) {
+      const activeCell = document.getElementById(`cell-${highlightHand}`);
+      if (activeCell) activeCell.classList.add('active-hand');
+    }
+  }
+
+  function updateFeltBanner(scenario) {
+    const bannerEl = document.getElementById('feltBanner');
+    bannerEl.classList.remove('step2-active', 'step-pulse');
+
+    if (twoStepMode && (STEP_CHAINS[scenario.id] || currentStepNum === 2)) {
+      const pillCls = currentStepNum === 2 ? 'step-2' : 'step-1';
+      const pillText = currentStepNum === 2 ? 'STEP 2/2' : 'STEP 1/2';
+      bannerEl.innerHTML = `<span class="step-pill ${pillCls}">${pillText}</span><span>${scenario.banner}</span>`;
+      if (currentStepNum === 2) {
+        bannerEl.classList.add('step2-active');
+        void bannerEl.offsetWidth;
+        bannerEl.classList.add('step-pulse');
+      }
+    } else {
+      bannerEl.textContent = scenario.banner;
+    }
+  }
+
+  function buildScenarioUI(scenario) {
+    document.getElementById('badgePos').textContent = scenario.pos;
+    document.getElementById('badgeStack').textContent = `${scenario.stack} BB`;
+    document.getElementById('badgeSpot').textContent = scenario.spot;
+
+    // Show/hide mix mini pills on the 3 boxes when Mix is active
+    document.getElementById('mixPillPos').classList.toggle('visible', currentPosKey === 'MIX');
+    document.getElementById('mixPillStack').classList.toggle('visible', currentStackKey === 'MIX');
+    document.getElementById('mixPillSpot').classList.toggle('visible', selectedSpotId.startsWith('mix_'));
+
+    updateFeltBanner(scenario);
+
     const btnContainer = document.getElementById('actionButtonsContainer');
     btnContainer.innerHTML = scenario.actions.map(act => `
       <button class="act-btn ${act.cls}" id="actbtn-${act.code}" onclick="submitAction('${act.code}')">
         <span class="act-title">${act.label}</span>
-        <span class="act-sub">${act.sub}</span>
       </button>
     `).join('');
 
-    if (lastRenderedScenarioId === scenario.id) {
-      document.querySelectorAll('.matrix-cell.active-hand').forEach(el => el.classList.remove('active-hand'));
-      return;
-    }
-    lastRenderedScenarioId = scenario.id;
+    renderChartPanel(scenario, null);
+  }
 
-    const grid = document.getElementById('matrixGrid');
-    grid.innerHTML = '';
+  function hideChartStepTabs() {
+    const tabsEl = document.getElementById('chartStepTabs');
+    if (tabsEl) tabsEl.classList.remove('visible');
+  }
 
-    ALL_169_HANDS.forEach(hand => {
-      const cell = document.createElement('div');
-      cell.id = `cell-${hand}`;
-      const dist = getHandBreakdown(scenario, hand);
+  function showChartStepTabs(defaultStep) {
+    const tabsEl = document.getElementById('chartStepTabs');
+    const tab1 = document.getElementById('tabStep1');
+    const tab2 = document.getElementById('tabStep2');
+    if (!tabsEl || !tab1 || !tab2 || completedSteps.length < 2) return;
 
-      if (!dist) {
-        cell.className = 'matrix-cell unused-cell';
-        cell.innerHTML = `<span>${hand}</span>`;
-      } else {
-        cell.className = 'matrix-cell';
-        const bars = document.createElement('div');
-        bars.className = 'cell-bars';
+    const s1 = completedSteps[0];
+    const s2 = completedSteps[1];
+    tab1.textContent = `Step 1 ${s1.isCorrect ? '✓' : '✗'}`;
+    tab2.textContent = `Step 2 ${s2.isCorrect ? '✓' : '✗'}`;
+    tab1.className = `chart-step-tab ${s1.isCorrect ? 'tab-ok' : 'tab-err'}`;
+    tab2.className = `chart-step-tab ${s2.isCorrect ? 'tab-ok' : 'tab-err'}`;
+    tabsEl.classList.add('visible');
+    viewChartStep(defaultStep);
+  }
 
-        if (dist.allin > 0) {
-          const b = document.createElement('div');
-          b.className = 'bar-allin';
-          b.style.width = `${dist.allin}%`;
-          bars.appendChild(b);
-        }
-        if (dist.raise > 0) {
-          const b = document.createElement('div');
-          b.className = 'bar-raise';
-          b.style.width = `${dist.raise}%`;
-          bars.appendChild(b);
-        }
-        if (dist.call > 0) {
-          const b = document.createElement('div');
-          b.className = 'bar-call';
-          b.style.width = `${dist.call}%`;
-          bars.appendChild(b);
-        }
-        if (dist.fold > 0) {
-          const b = document.createElement('div');
-          b.className = 'bar-fold';
-          b.style.width = `${dist.fold}%`;
-          bars.appendChild(b);
-        }
+  function viewChartStep(stepIndex) {
+    if (completedSteps.length < 2) return;
+    const rec = completedSteps[stepIndex - 1];
+    if (!rec) return;
 
-        cell.appendChild(bars);
-        const label = document.createElement('span');
-        label.textContent = hand;
-        cell.appendChild(label);
-      }
+    activeChartStepView = stepIndex;
+    const tab1 = document.getElementById('tabStep1');
+    const tab2 = document.getElementById('tabStep2');
+    if (tab1) tab1.classList.toggle('active', stepIndex === 1);
+    if (tab2) tab2.classList.toggle('active', stepIndex === 2);
 
-      grid.appendChild(cell);
-    });
+    renderChartPanel(rec.scenario, currentHand);
   }
 
   function pickHandNotation(scenario) {
@@ -5643,8 +6137,14 @@
 
   function dealNextHand() {
     answered = false;
+    currentStepNum = 1;
+    step1Record = null;
+    completedSteps = [];
+    activeChartStepView = 1;
     isHoldingPeek = false;
     maskWasCoveredBeforeHold = true;
+    hideChartStepTabs();
+
     activeScenario = resolveScenarioFromSpot(selectedSpotId);
 
     buildScenarioUI(activeScenario);
@@ -5666,48 +6166,45 @@
 
     const fbBox = document.getElementById('feedbackBox');
     fbBox.className = 'feedback-box';
-    const fbIcon = document.getElementById('feedbackIcon');
-    fbIcon.className = 'feedback-icon icon-neutral';
-    fbIcon.textContent = '?';
-    document.getElementById('feedbackTitle').textContent = `${activeScenario.pos} (${activeScenario.stack}bb • ${activeScenario.spot})`;
-    document.getElementById('feedbackDesc').textContent = 'Select your action below.';
+    document.getElementById('feedbackTitle').textContent = '';
+    document.getElementById('feedbackDesc').textContent = '';
     document.getElementById('nextBtn').style.display = 'none';
   }
 
-  function formatBreakdownText(dist) {
+  function formatBreakdownText(dist, scenario = activeScenario) {
     const parts = [];
     let callLabel = 'Call';
-    let raiseLabel = activeScenario.stack === '15' ? 'Raise 2x' : 'Raise/3B/4B';
+    let raiseLabel = scenario.stack === '15' ? 'Raise 2x' : 'Raise/3B/4B';
 
-    if (activeScenario.id === 'sb_15_pfi') {
+    if (scenario.id === 'sb_15_pfi') {
       callLabel = 'Limp';
       raiseLabel = 'All-in';
-    } else if (activeScenario.id === 'sb_25_pfi') {
+    } else if (scenario.id === 'sb_25_pfi') {
       callLabel = 'Limp';
       raiseLabel = 'Raise 3.3x';
-    } else if (['sb_40_pfi', 'sb_60_pfi'].includes(activeScenario.id)) {
+    } else if (['sb_40_pfi', 'sb_60_pfi'].includes(scenario.id)) {
       callLabel = 'Limp';
       raiseLabel = 'Raise 3.5x';
-    } else if (['sb_15_limp_vs_iso', 'sb_25_limp_vs_iso'].includes(activeScenario.id)) {
+    } else if (['sb_15_limp_vs_iso', 'sb_25_limp_vs_iso'].includes(scenario.id)) {
       raiseLabel = 'Raise All-in';
-    } else if (activeScenario.id === 'sb_40_limp_vs_iso') {
+    } else if (scenario.id === 'sb_40_limp_vs_iso') {
       raiseLabel = 'Raise 2.75x';
-    } else if (activeScenario.id === 'sb_60_limp_vs_iso') {
+    } else if (scenario.id === 'sb_60_limp_vs_iso') {
       raiseLabel = 'Raise 3.4x';
-    } else if (activeScenario.id === 'bb_15_vs_sb_limp') {
+    } else if (scenario.id === 'bb_15_vs_sb_limp') {
       callLabel = 'Check';
       raiseLabel = 'Raise 3x';
-    } else if (activeScenario.id === 'bb_25_vs_sb_limp') {
+    } else if (scenario.id === 'bb_25_vs_sb_limp') {
       callLabel = 'Check';
       raiseLabel = 'Raise 3.3x';
-    } else if (['bb_40_vs_sb_limp', 'bb_60_vs_sb_limp'].includes(activeScenario.id)) {
+    } else if (['bb_40_vs_sb_limp', 'bb_60_vs_sb_limp'].includes(scenario.id)) {
       callLabel = 'Check';
       raiseLabel = 'Raise 3.5x';
     } else if ([
       'utg_15_vs_3bet', 'hj_15_vs_3bet', 'bn_15_vs_3bet',
       'sb_15_limp_vs_allin', 'bb_15_vs_sb_limp_push',
       'hj_25_vs_3bet', 'sb_25_limp_vs_allin', 'sb_25_open_vs_allin'
-    ].includes(activeScenario.id)) {
+    ].includes(scenario.id)) {
       callLabel = 'Call All-in';
     }
 
@@ -5718,40 +6215,96 @@
     return parts.join(' • ');
   }
 
+  function findNextStepScenario(step1Scenario, actionCode, hand) {
+    if (!twoStepMode) return null;
+    const cfg = STEP_CHAINS[step1Scenario.id];
+    if (!cfg || !cfg.next || !cfg.next[actionCode]) return null;
+
+    const candidates = cfg.next[actionCode].filter(id => {
+      const sc = SCENARIOS[id];
+      return sc && getHandBreakdown(sc, hand) !== null;
+    });
+    if (candidates.length === 0) return null;
+
+    const chosenId = candidates[Math.floor(Math.random() * candidates.length)];
+    return SCENARIOS[chosenId];
+  }
+
   function submitAction(actionCode) {
     if (answered) return;
+
+    const dist = getHandBreakdown(activeScenario, currentHand);
+    if (!dist) return;
+    const chosenFreq = dist[actionCode] || 0;
+    const isCorrect = chosenFreq > 0;
+    const breakdownStr = formatBreakdownText(dist, activeScenario);
+    const chosenActObj = activeScenario.actions.find(a => a.code === actionCode);
+    const chosenLabel = chosenActObj ? chosenActObj.label : actionCode.toUpperCase();
+
+    const currentRecord = {
+      scenario: activeScenario,
+      actionCode,
+      actionLabel: chosenLabel,
+      chosenFreq,
+      isCorrect,
+      breakdownStr
+    };
+
+    // STEP 1 -> Check if we should transition to STEP 2 (only if Step 1 is correct!)
+    if (twoStepMode && currentStepNum === 1 && isCorrect) {
+      const nextScenario = findNextStepScenario(activeScenario, actionCode, currentHand);
+      if (nextScenario) {
+        step1Record = currentRecord;
+        currentStepNum = 2;
+        activeScenario = nextScenario;
+        isHoldingPeek = false;
+        maskWasCoveredBeforeHold = true;
+
+        try {
+          if (navigator.vibrate) navigator.vibrate(15);
+        } catch (e) {}
+
+        buildScenarioUI(activeScenario);
+        document.getElementById('matrixMask').classList.remove('hidden');
+        return;
+      }
+    }
+
+    // FINALIZE HAND (either single-step hand, Step 1 error/terminal action, or Step 2 completion)
     answered = true;
     maskWasCoveredBeforeHold = false;
 
-    const dist = getHandBreakdown(activeScenario, currentHand);
-    const chosenFreq = dist[actionCode] || 0;
-    const isCorrect = chosenFreq > 0;
+    const isTwoStepCompleted = (currentStepNum === 2 && step1Record !== null);
+    completedSteps = isTwoStepCompleted ? [step1Record, currentRecord] : [currentRecord];
+
+    const overallCorrect = completedSteps.every(s => s.isCorrect);
 
     try {
       if (navigator.vibrate) {
-        navigator.vibrate(isCorrect ? 25 : [50, 40, 50]);
+        navigator.vibrate(overallCorrect ? 25 : [50, 40, 50]);
       }
     } catch (e) {}
 
-    const breakdownStr = formatBreakdownText(dist);
-
     stats.total++;
-    if (isCorrect) {
+    if (overallCorrect) {
       stats.correct++;
       stats.streak++;
     } else {
       stats.streak = 0;
       if (!Array.isArray(stats.mistakes)) stats.mistakes = [];
-      const chosenActObj = activeScenario.actions.find(a => a.code === actionCode);
-      const chosenLabel = chosenActObj ? chosenActObj.label : actionCode.toUpperCase();
+      const failedStep = completedSteps.find(s => !s.isCorrect) || currentRecord;
+      const mistakeSpotLabel = isTwoStepCompleted
+        ? `${step1Record.scenario.spot} (${step1Record.actionLabel} ✓) → ${failedStep.scenario.spot}`
+        : failedStep.scenario.spot;
+
       stats.mistakes.unshift({
         hand: currentHand,
-        pos: activeScenario.pos,
-        stack: activeScenario.stack,
-        spot: activeScenario.spot,
-        title: activeScenario.title,
-        chosen: chosenLabel,
-        gto: breakdownStr
+        pos: failedStep.scenario.pos,
+        stack: failedStep.scenario.stack,
+        spot: mistakeSpotLabel,
+        title: failedStep.scenario.title,
+        chosen: failedStep.actionLabel,
+        gto: failedStep.breakdownStr
       });
     }
     saveStats();
@@ -5761,26 +6314,49 @@
     const fbTitle = document.getElementById('feedbackTitle');
     const fbDesc = document.getElementById('feedbackDesc');
 
-    if (isCorrect) {
-      fbBox.className = 'feedback-box correct';
-      fbIcon.className = 'feedback-icon icon-correct';
-      fbIcon.textContent = '✓';
-      fbTitle.textContent = chosenFreq === 100
-        ? `CORRECT! Pure 100% (${currentHand})`
-        : `CORRECT! Mixed (${chosenFreq}%) — ${currentHand}`;
+    if (isTwoStepCompleted) {
+      const s1 = completedSteps[0];
+      const s2 = completedSteps[1];
+      if (overallCorrect) {
+        fbBox.className = 'feedback-box correct';
+        fbIcon.className = 'feedback-icon icon-correct';
+        fbIcon.textContent = '✓';
+        fbTitle.textContent = `2-STEP CORRECT! (${currentHand})`;
+      } else {
+        fbBox.className = 'feedback-box wrong';
+        fbIcon.className = 'feedback-icon icon-wrong';
+        fbIcon.textContent = '✗';
+        fbTitle.textContent = `STEP 2 INCORRECT! (${currentHand})`;
+      }
+      fbDesc.textContent = `S1: ${s1.actionLabel} ✓ (${s1.chosenFreq}%) • S2: [ ${s2.breakdownStr} ]`;
     } else {
-      fbBox.className = 'feedback-box wrong';
-      fbIcon.className = 'feedback-icon icon-wrong';
-      fbIcon.textContent = '✗';
-      fbTitle.textContent = `INCORRECT! (${currentHand})`;
+      if (overallCorrect) {
+        fbBox.className = 'feedback-box correct';
+        fbIcon.className = 'feedback-icon icon-correct';
+        fbIcon.textContent = '✓';
+        fbTitle.textContent = chosenFreq === 100
+          ? `CORRECT! Pure 100% (${currentHand})`
+          : `CORRECT! Mixed (${chosenFreq}%) — ${currentHand}`;
+      } else {
+        fbBox.className = 'feedback-box wrong';
+        fbIcon.className = 'feedback-icon icon-wrong';
+        fbIcon.textContent = '✗';
+        fbTitle.textContent = `INCORRECT! (${currentHand})`;
+      }
+      fbDesc.textContent = `${currentHand}: [ ${breakdownStr} ]`;
     }
 
-    fbDesc.textContent = `${currentHand}: [ ${breakdownStr} ]`;
     document.getElementById('nextBtn').style.display = 'block';
-
     document.getElementById('matrixMask').classList.add('hidden');
-    const activeCell = document.getElementById(`cell-${currentHand}`);
-    if (activeCell) activeCell.classList.add('active-hand');
+
+    if (isTwoStepCompleted) {
+      // Default tab: mistake step if any, else Step 2
+      const defaultTab = !completedSteps[0].isCorrect ? 1 : 2;
+      showChartStepTabs(defaultTab);
+    } else {
+      hideChartStepTabs();
+      renderChartPanel(activeScenario, currentHand);
+    }
 
     document.querySelectorAll('.act-btn').forEach(b => b.disabled = true);
   }
@@ -5955,6 +6531,14 @@
       if (key === ' ' || key === 'enter') {
         e.preventDefault();
         dealNextHand();
+      } else if (completedSteps.length === 2) {
+        if (e.key === 'ArrowLeft' || key === '1') {
+          e.preventDefault();
+          viewChartStep(1);
+        } else if (e.key === 'ArrowRight' || key === '2') {
+          e.preventDefault();
+          viewChartStep(2);
+        }
       }
     }
   });
@@ -5967,9 +6551,9 @@
   });
 
   function initApp() {
-    const totalCount = Object.keys(SCENARIOS).length;
-    document.getElementById('totalChartsTag').textContent = `${totalCount} Charts (15, 25, 40 & 60bb)`;
     loadStats();
+    loadTwoStepPref();
+    ensureValidSpotForMode();
     renderDropdownMenus();
     dealNextHand();
   }
